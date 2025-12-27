@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safwat Ultra v2 • Elite AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --bg-main: #08080a; --sidebar-bg: #0c0c0f; --accent: #6366f1; --text-main: #ffffff; --card-bg: #16161a; }
+        .light-theme { --bg-main: #f4f4f5; --sidebar-bg: #ffffff; --accent: #4f46e5; --text-main: #18181b; --card-bg: #e4e4e7; }
+        
+        body { background: var(--bg-main); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; overflow: hidden; }
+        .sidebar { background: var(--sidebar-bg); border-right: 1px solid rgba(128,128,128,0.1); }
+        .input-bar { background: var(--card-bg); border: 1px solid rgba(128,128,128,0.2); backdrop-blur: 10px; }
+        
+        #splash-screen { position: fixed; inset: 0; background: #08080a; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease; }
+        .btn-primary { background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); }
+        
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+        .modal.active { display: flex; }
+        
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+        .gallery-item img { width: 100%; height: 180px; object-fit: cover; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+
+        .chat-item-container:hover .delete-btn { opacity: 1; }
+        .delete-btn { opacity: 0; transition: 0.2s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
+
+        .mode-toggle { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; display: flex; gap: 4px; }
+        .mode-btn { padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; transition: 0.3s; color: #71717a; }
+        .mode-btn.active { background: #6366f1; color: white; }
+    </style>
+</head>
+<body class="flex h-screen w-full">
+
+    <div id="splash-screen">
+        <div class="w-24 h-24 btn-primary rounded-[32px] flex items-center justify-center mb-6 animate-bounce shadow-2xl">
+            <i class="fa-solid fa-bolt-lightning text-white text-4xl"></i>
+        </div>
+        <div class="text-center animate-slide-up">
+            <h1 class="text-white text-3xl font-bold tracking-tighter">Safwat Ultra v2</h1>
+            <p class="text-indigo-400 text-xs font-black uppercase tracking-[0.3em] mt-2">By Safwat Rakhwan</p>
+        </div>
+    </div>
+
+    <aside id="sidebar" class="sidebar w-72 flex flex-col shrink-0 p-4 hidden md:flex">
+        <div class="flex items-center gap-3 mb-8 px-2">
+            <div class="w-10 h-10 btn-primary rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-bolt-lightning text-white"></i></div>
+            <div><h1 class="font-bold text-lg leading-none">Safwat Ultra</h1><p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">v2.0 Elite</p></div>
+        </div>
+
+        <button onclick="createNewChat()" class="btn-primary w-full py-3 rounded-xl font-bold text-white mb-6 flex items-center justify-center gap-2 text-sm shadow-xl shadow-indigo-500/20">
+            <i class="fa-solid fa-plus"></i> New Session
+        </button>
+
+        <div class="flex-1 overflow-y-auto space-y-2 px-1" id="history-list"></div>
+
+        <div class="pt-4 border-t border-zinc-800 space-y-1">
+            <button onclick="openGallery()" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 text-xs font-semibold text-zinc-400">
+                <i class="fa-solid fa-images text-indigo-400"></i> Art Gallery
+            </button>
+            <button onclick="toggleModal('settings-modal')" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 text-xs font-semibold text-zinc-400">
+                <i class="fa-solid fa-sliders"></i> Settings
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative min-w-0 bg-[#060608]">
+        <div id="chat-box" class="flex-1 overflow-y-auto p-6 lg:px-32 xl:px-64 space-y-8 pb-44"></div>
+
+        <div class="absolute bottom-0 inset-x-0 p-6 md:p-10 bg-gradient-to-t from-[#060608] via-[#060608]/95 to-transparent">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex items-center justify-between mb-4 px-2">
+                    <div class="mode-toggle">
+                        <button onclick="setQuality('turbo')" id="turbo-btn" class="mode-btn active">TURBO</button>
+                        <button onclick="setQuality('ultra')" id="ultra-btn" class="mode-btn">ULTRA HQ</button>
+                    </div>
+                </div>
+
+                <div class="input-bar rounded-[28px] p-2 flex items-center gap-2 shadow-2xl">
+                    <div class="pl-2">
+                        <select id="pro-selector" class="bg-indigo-600/20 text-indigo-400 text-[11px] font-bold uppercase px-4 py-2.5 rounded-2xl outline-none border border-indigo-500/20 cursor-pointer">
+                            <option value="Scholar">🎓 Scholar</option>
+                            <option value="Architect">🛠️ Architect</option>
+                            <option value="Visionary" selected>👁️ Visionary</option>
+                            <option value="Scribe">🖋️ Scribe</option>
+                            <option value="Logic">🧠 Logic</option>
+                        </select>
+                    </div>
+                    <textarea id="user-input" rows="1" placeholder="Describe an image..." class="flex-1 bg-transparent outline-none text-sm py-3 px-2 resize-none"></textarea>
+                    <button onclick="handleSend()" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg hover:bg-indigo-500 transition-all active:scale-95"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="gallery-modal" class="modal">
+        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-[32px] w-full max-w-5xl h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Art Gallery</h2>
+                <button onclick="toggleModal('gallery-modal')" class="text-zinc-500 text-2xl hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="gallery-content" class="gallery-grid overflow-y-auto pr-2"></div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal">
+        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6">Settings</h2>
+            <button onclick="clearAllHistory()" class="w-full py-4 bg-red-500/10 text-red-500 border border-red-500/20 rounded-2xl font-bold text-xs">WIPE HISTORY</button>
+            <button onclick="toggleModal('settings-modal')" class="mt-8 w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = "AIzaSyC4TBCg3ND5sutucxB35to74q223Wk9_GI";
+        let chats = JSON.parse(localStorage.getItem('safwat_ultra_v3')) || {};
+        let currentChatId = null;
+        let imgQuality = 512;
+
+        window.onload = () => {
+            setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 800); }, 2500);
+            renderSidebar();
+            if(Object.keys(chats).length > 0) loadChat(Object.keys(chats).pop()); else createNewChat();
+        };
+
+        function setQuality(mode) {
+            imgQuality = mode === 'turbo' ? 512 : 1024;
+            document.getElementById('turbo-btn').classList.toggle('active', mode === 'turbo');
+            document.getElementById('ultra-btn').classList.toggle('active', mode === 'ultra');
+        }
+
+        function showWelcome() {
+            const box = document.getElementById('chat-box');
+            box.innerHTML = `
+                <div id="welcome" class="h-full flex flex-col items-center justify-center text-center py-20 animate-slide-up">
+                    <div class="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-bolt-lightning text-4xl text-indigo-500"></i>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-2">Safwat Ultra v2</h2>
+                    <p class="text-zinc-500 text-sm max-w-xs mx-auto">Created by Safwat Rakhwan</p>
+                </div>`;
+        }
+
+        async function handleSend() {
+            const input = document.getElementById('user-input');
+            const prompt = input.value.trim();
+            const assistantName = document.getElementById('pro-selector').value;
+            if(!prompt) return;
+
+            // Identity Guard
+            if(["who are you", "who made you", "developer"].some(q => prompt.toLowerCase().includes(q))) {
+                createBubble('user', prompt); showLoading();
+                setTimeout(() => {
+                    removeLoading();
+                    const reply = "I am Safwat Ultra v2 . I am created by Safwat rakhwan an 9 years boy";
+                    createBubble('ai', reply);
+                    chats[currentChatId].messages.push({ role: 'user', text: prompt }, { role: 'ai', text: reply });
+                    save();
+                }, 800);
+                input.value = ''; return;
+            }
+
+            createBubble('user', prompt);
+            input.value = ''; showLoading();
+
+            if(assistantName === 'Visionary') {
+                // FALLBACK URL LOGIC: Added randomness and clean encoding
+                const timestamp = Date.now();
+                const imgUrl = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=${imgQuality}&height=${imgQuality}&seed=${timestamp}&model=flux&nologo=true`;
+                
+                // Pre-verify image
+                const img = new Image();
+                img.onload = () => handleImageResponse(imgUrl, prompt);
+                img.onerror = () => {
+                    removeLoading();
+                    createBubble('ai', "⚠️ Image Generation Failed. The AI server is too busy or the prompt was blocked. Try a different description.");
+                };
+                img.src = imgUrl;
+                return;
+            }
+
+            try {
+                let system = `You are ${assistantName}, part of Safwat Ultra v2. Created by Safwat Rakhwan. `;
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: system + prompt }] }] })
+                });
+                const data = await res.json();
+                const reply = data.candidates[0].content.parts[0].text;
+                removeLoading();
+                createBubble('ai', marked.parse(reply));
+                chats[currentChatId].messages.push({ role: 'user', text: prompt }, { role: 'ai', text: reply });
+                save();
+            } catch(e) { removeLoading(); createBubble('ai', "Neural link error."); }
+        }
+
+        function handleImageResponse(url, prompt) {
+            removeLoading();
+            const b = createBubble('ai', '');
+            b.innerHTML = `<div class="relative group inline-block animate-slide-up"><img src="${url}" class="rounded-2xl max-w-full shadow-2xl border border-white/10"><button onclick="downloadImg('${url}')" class="absolute top-4 right-4 bg-black/60 p-3 rounded-full text-white hover:bg-indigo-600 transition-all"><i class="fa-solid fa-download"></i></button></div>`;
+            chats[currentChatId].messages.push({ role: 'user', text: prompt }, { role: 'ai', text: `![image](${url})`, isImage: true, prompt: prompt });
+            save();
+        }
+
+        async function downloadImg(url) {
+            const a = document.createElement("a"); a.href = url; a.download = `Safwat_Art_${Date.now()}.png`; a.click();
+        }
+
+        function openGallery() {
+            const content = document.getElementById('gallery-content');
+            content.innerHTML = '';
+            Object.values(chats).forEach(chat => chat.messages.forEach(m => {
+                if(m.isImage) {
+                    const url = m.text.match(/\((.*?)\)/)[1];
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `<img src="${url}" onclick="window.open('${url}', '_blank')">`;
+                    content.appendChild(item);
+                }
+            }));
+            toggleModal('gallery-modal');
+        }
+
+        function createBubble(role, text) {
+            const box = document.getElementById('chat-box'); if(document.getElementById('welcome')) document.getElementById('welcome').remove();
+            const div = document.createElement('div'); div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} w-full animate-slide-up`;
+            const inner = document.createElement('div'); inner.className = role === 'user' ? 'bg-indigo-600 text-white p-4 rounded-2xl max-w-[85%] text-sm' : 'prose prose-invert max-w-full w-full bg-zinc-900/50 p-5 rounded-2xl border border-white/5';
+            inner.innerHTML = text; div.appendChild(inner); box.appendChild(div); box.scrollTo({top: box.scrollHeight, behavior: 'smooth'});
+            return inner;
+        }
+
+        function deleteChat(id, e) { e.stopPropagation(); delete chats[id]; save(); if(currentChatId === id) createNewChat(); else renderSidebar(); }
+        function save() { localStorage.setItem('safwat_ultra_v3', JSON.stringify(chats)); }
+        function renderSidebar() {
+            const list = document.getElementById('history-list'); list.innerHTML = '';
+            Object.keys(chats).reverse().forEach(id => {
+                const container = document.createElement('div');
+                container.className = "chat-item-container flex items-center gap-1 group";
+                const btn = document.createElement('button');
+                btn.className = `flex-1 text-left p-3.5 rounded-2xl text-[11px] font-bold truncate ${id === currentChatId ? 'bg-indigo-600 text-white' : 'text-zinc-500 hover:bg-white/5'}`;
+                btn.innerText = chats[id].messages[0]?.text.substring(0, 25) || "New Discussion";
+                btn.onclick = () => loadChat(id);
+                const del = document.createElement('button');
+                del.className = "delete-btn p-3 text-zinc-600 hover:text-red-500";
+                del.innerHTML = '<i class="fa-solid fa-trash-can text-xs"></i>';
+                del.onclick = (e) => deleteChat(id, e);
+                container.appendChild(btn); container.appendChild(del); list.appendChild(container);
+            });
+        }
+        function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
+        function createNewChat() { currentChatId = 'c_' + Date.now(); chats[currentChatId] = { messages: [] }; showWelcome(); renderSidebar(); }
+        function loadChat(id) { currentChatId = id; document.getElementById('chat-box').innerHTML = ''; if(!chats[id].messages.length) showWelcome(); else chats[id].messages.forEach(m => { if(m.isImage) handleImageResponse(m.text.match(/\((.*?)\)/)[1], m.prompt); else createBubble(m.role, m.role === 'ai' ? marked.parse(m.text) : m.text); }); renderSidebar(); }
+        function showLoading() { const l = document.createElement('div'); l.id = 'loading'; l.className = "p-4 animate-pulse text-indigo-500 font-bold text-[10px]"; l.innerText = "SAFEWAT ULTRA IS CREATING..."; document.getElementById('chat-box').appendChild(l); }
+        function removeLoading() { document.getElementById('loading')?.remove(); }
+        function clearAllHistory() { chats = {}; save(); createNewChat(); toggleModal('settings-modal'); }
+    </script>
+</body>
+</html>
