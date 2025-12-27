@@ -1,266 +1,305 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safwat Ultra v2 • Elite AI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farleek Pro • 2025</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <style>
-        :root { --bg-main: #08080a; --sidebar-bg: #0c0c0f; --accent: #6366f1; --text-main: #ffffff; --card-bg: #16161a; }
-        .light-theme { --bg-main: #f4f4f5; --sidebar-bg: #ffffff; --accent: #4f46e5; --text-main: #18181b; --card-bg: #e4e4e7; }
-        
-        body { background: var(--bg-main); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; overflow: hidden; }
-        .sidebar { background: var(--sidebar-bg); border-right: 1px solid rgba(128,128,128,0.1); }
-        .input-bar { background: var(--card-bg); border: 1px solid rgba(128,128,128,0.2); backdrop-blur: 10px; }
-        
-        #splash-screen { position: fixed; inset: 0; background: #08080a; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease; }
-        .btn-primary { background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); }
-        
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
-        .modal.active { display: flex; }
-        
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
-        .gallery-item img { width: 100%; height: 180px; object-fit: cover; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
-
-        .chat-item-container:hover .delete-btn { opacity: 1; }
-        .delete-btn { opacity: 0; transition: 0.2s; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
-
-        .mode-toggle { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; display: flex; gap: 4px; }
-        .mode-btn { padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; transition: 0.3s; color: #71717a; }
-        .mode-btn.active { background: #6366f1; color: white; }
-    </style>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(to bottom, #000000, #0a0a0a);
+      color: #f1f1f1;
+    }
+    .glass {
+      background: rgba(20, 20, 25, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    }
+    .typing-dot {
+      animation: blink 1.4s infinite both;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 0.25; transform: scale(0.75); }
+      50%      { opacity: 1;    transform: scale(1.15); }
+    }
+    #chat-display {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+  </style>
 </head>
-<body class="flex h-screen w-full">
+<body class="min-h-screen antialiased selection:bg-purple-600/30">
 
-    <div id="splash-screen">
-        <div class="w-24 h-24 btn-primary rounded-[32px] flex items-center justify-center mb-6 animate-bounce shadow-2xl">
-            <i class="fa-solid fa-bolt-lightning text-white text-4xl"></i>
-        </div>
-        <div class="text-center animate-slide-up">
-            <h1 class="text-white text-3xl font-bold tracking-tighter">Safwat Ultra v2</h1>
-            <p class="text-indigo-400 text-xs font-black uppercase tracking-[0.3em] mt-2">By Safwat Rakhwan</p>
-        </div>
+<!-- Sidebar -->
+<aside class="fixed inset-y-0 left-0 z-50 w-80 bg-black/90 border-r border-white/5 transform -translate-x-full md:translate-x-0 transition-transform duration-500 ease-out">
+  <div class="flex flex-col h-full p-6">
+    <div class="flex items-center gap-3 mb-10">
+      <div class="w-11 h-11 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-900/40">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+        </svg>
+      </div>
+      <h1 class="text-3xl font-black tracking-tighter bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">Farleek</h1>
     </div>
 
-    <aside id="sidebar" class="sidebar w-72 flex flex-col shrink-0 p-4 hidden md:flex">
-        <div class="flex items-center gap-3 mb-8 px-2">
-            <div class="w-10 h-10 btn-primary rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-bolt-lightning text-white"></i></div>
-            <div><h1 class="font-bold text-lg leading-none">Safwat Ultra</h1><p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">v2.0 Elite</p></div>
-        </div>
+    <button id="new-chat-btn" class="group relative w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-500 hover:to-purple-600 text-white font-semibold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-purple-900/30 hover:shadow-purple-700/40 mb-10">
+      <span class="relative z-10 flex items-center justify-center gap-2 text-lg">
+        + New Conversation
+      </span>
+    </button>
 
-        <button onclick="createNewChat()" class="btn-primary w-full py-3 rounded-xl font-bold text-white mb-6 flex items-center justify-center gap-2 text-sm shadow-xl shadow-indigo-500/20">
-            <i class="fa-solid fa-plus"></i> New Session
+    <div class="flex-1 overflow-y-auto scrollbar-none">
+      <h2 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-5 px-1">Recent</h2>
+      <div id="history-list" class="space-y-2"></div>
+    </div>
+
+    <button id="clear-btn" class="mt-6 text-sm text-zinc-600 hover:text-red-400 transition-colors text-left px-2 py-1.5">
+      Clear All Memory
+    </button>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="md:ml-80 min-h-screen flex flex-col relative">
+
+  <!-- Mobile Header -->
+  <header class="md:hidden sticky top-0 z-40 bg-black/80 backdrop-blur-xl border-b border-white/5">
+    <div class="flex items-center justify-between px-5 py-4">
+      <span class="font-black text-2xl tracking-tighter bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">Farleek</span>
+      <button id="menu-toggle" class="text-2xl text-zinc-300">☰</button>
+    </div>
+  </header>
+
+  <!-- Chat Area -->
+  <div id="chat-display" class="flex-1 overflow-y-auto px-5 md:px-16 py-12 pb-60 space-y-10 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+    <div id="welcome-screen" class="text-center mt-24 md:mt-32">
+      <h1 class="text-7xl md:text-9xl font-black tracking-tighter bg-gradient-to-b from-white via-zinc-300 to-zinc-700 bg-clip-text text-transparent">
+        Farleek
+      </h1>
+      <p class="mt-6 text-zinc-400 text-xl font-light">Ultra • Fast • Intelligent</p>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="fixed bottom-0 inset-x-0 md:left-80 z-30 px-5 md:px-16 pb-8 pt-16 bg-gradient-to-t from-black via-black/95 to-transparent pointer-events-none">
+    <div class="pointer-events-auto max-w-5xl mx-auto space-y-6">
+
+      <!-- Mode Selector -->
+      <div class="flex justify-center">
+        <div class="glass inline-flex p-1.5 rounded-2xl gap-1.5 shadow-xl shadow-black/60 flex-wrap justify-center">
+          <button onclick="setMode('text-gemini')" class="mode-btn active px-8 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all" data-mode="text-gemini">GEMINI</button>
+          <button onclick="setMode('image')" class="mode-btn px-8 py-2.5 rounded-xl text-xs font-black tracking-widest text-zinc-400 hover:text-white transition-all" data-mode="image">IMAGE</button>
+          <button onclick="setMode('pro')" class="mode-btn px-8 py-2.5 rounded-xl text-xs font-black tracking-widest text-zinc-400 hover:text-white transition-all" data-mode="pro">PRO CODE</button>
+        </div>
+      </div>
+
+      <!-- Input Container -->
+      <div class="glass rounded-[2.5rem] p-3 flex items-end gap-3 shadow-2xl shadow-black/70 border border-white/5">
+        <label for="file-input" class="p-4 hover:bg-white/5 rounded-2xl cursor-pointer text-zinc-400 hover:text-zinc-200 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </label>
+
+        <textarea id="user-input" rows="1" placeholder="How can Farleek help you today..." 
+          class="flex-1 bg-transparent border-0 focus:ring-0 text-lg md:text-xl text-white placeholder-zinc-500 resize-none max-h-48 py-4 px-2 outline-none"></textarea>
+
+        <button id="send-btn" class="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white p-4 rounded-2xl transition-all duration-300 active:scale-95 shadow-lg shadow-purple-900/40">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+          </svg>
         </button>
-
-        <div class="flex-1 overflow-y-auto space-y-2 px-1" id="history-list"></div>
-
-        <div class="pt-4 border-t border-zinc-800 space-y-1">
-            <button onclick="openGallery()" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 text-xs font-semibold text-zinc-400">
-                <i class="fa-solid fa-images text-indigo-400"></i> Art Gallery
-            </button>
-            <button onclick="toggleModal('settings-modal')" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 text-xs font-semibold text-zinc-400">
-                <i class="fa-solid fa-sliders"></i> Settings
-            </button>
-        </div>
-    </aside>
-
-    <main class="flex-1 flex flex-col relative min-w-0 bg-[#060608]">
-        <div id="chat-box" class="flex-1 overflow-y-auto p-6 lg:px-32 xl:px-64 space-y-8 pb-44"></div>
-
-        <div class="absolute bottom-0 inset-x-0 p-6 md:p-10 bg-gradient-to-t from-[#060608] via-[#060608]/95 to-transparent">
-            <div class="max-w-4xl mx-auto">
-                <div class="flex items-center justify-between mb-4 px-2">
-                    <div class="mode-toggle">
-                        <button onclick="setQuality('turbo')" id="turbo-btn" class="mode-btn active">TURBO</button>
-                        <button onclick="setQuality('ultra')" id="ultra-btn" class="mode-btn">ULTRA HQ</button>
-                    </div>
-                </div>
-
-                <div class="input-bar rounded-[28px] p-2 flex items-center gap-2 shadow-2xl">
-                    <div class="pl-2">
-                        <select id="pro-selector" class="bg-indigo-600/20 text-indigo-400 text-[11px] font-bold uppercase px-4 py-2.5 rounded-2xl outline-none border border-indigo-500/20 cursor-pointer">
-                            <option value="Scholar">🎓 Scholar</option>
-                            <option value="Architect">🛠️ Architect</option>
-                            <option value="Visionary" selected>👁️ Visionary</option>
-                            <option value="Scribe">🖋️ Scribe</option>
-                            <option value="Logic">🧠 Logic</option>
-                        </select>
-                    </div>
-                    <textarea id="user-input" rows="1" placeholder="Describe an image..." class="flex-1 bg-transparent outline-none text-sm py-3 px-2 resize-none"></textarea>
-                    <button onclick="handleSend()" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg hover:bg-indigo-500 transition-all active:scale-95"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div id="gallery-modal" class="modal">
-        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-[32px] w-full max-w-5xl h-[85vh] flex flex-col">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold">Art Gallery</h2>
-                <button onclick="toggleModal('gallery-modal')" class="text-zinc-500 text-2xl hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="gallery-content" class="gallery-grid overflow-y-auto pr-2"></div>
-        </div>
+      </div>
     </div>
+  </div>
+</main>
 
-    <div id="settings-modal" class="modal">
-        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl">
-            <h2 class="text-2xl font-bold mb-6">Settings</h2>
-            <button onclick="clearAllHistory()" class="w-full py-4 bg-red-500/10 text-red-500 border border-red-500/20 rounded-2xl font-bold text-xs">WIPE HISTORY</button>
-            <button onclick="toggleModal('settings-modal')" class="mt-8 w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold">Close</button>
-        </div>
-    </div>
+<script type="module">
+  import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-    <script>
-        const API_KEY = "AIzaSyC4TBCg3ND5sutucxB35to74q223Wk9_GI";
-        let chats = JSON.parse(localStorage.getItem('safwat_ultra_v3')) || {};
-        let currentChatId = null;
-        let imgQuality = 512;
+  // ── CONFIG ────────────────────────────────────────────────────────────────
+  const GEMINI_KEY = "YOUR_GEMINI_API_KEY_HERE"; // ← Replace with your actual key from https://aistudio.google.com/app/apikey
 
-        window.onload = () => {
-            setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 800); }, 2500);
-            renderSidebar();
-            if(Object.keys(chats).length > 0) loadChat(Object.keys(chats).pop()); else createNewChat();
+  const sysPrompt = `Your name is Farleek. You are a professional, ultra-capable AI assistant. 
+If someone asks about you or the creator, say: "I am Farleek. Created by Farhat rakhwan at 7 years".
+- TEXT mode: Be concise, clear, insightful.
+- PRO CODE mode: Provide complete, working, single-file HTML/CSS/JS solutions with modern dark-themed UI.
+- Never mention providers or APIs. You are Farleek.`;
+
+  const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+  const geminiModel = genAI.getGenerativeModel({ 
+    model: "gemini-1.5-flash",
+    systemInstruction: sysPrompt
+  });
+
+  // ── DOM & STATE ───────────────────────────────────────────────────────────
+  const chatDisplay = document.getElementById('chat-display');
+  const welcomeScreen = document.getElementById('welcome-screen');
+  const userInput = document.getElementById('user-input');
+  const sendBtn = document.getElementById('send-btn');
+  const fileInput = document.getElementById('file-input');
+
+  let chatData = JSON.parse(localStorage.getItem('farleek_v1')) || [];
+  let currentMode = 'text-gemini';
+  let attachedFile = "";
+
+  // Reliable auto-scroll
+  function scrollToBottom() {
+    requestAnimationFrame(() => {
+      chatDisplay.scrollTo({
+        top: chatDisplay.scrollHeight,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  window.setMode = (m) => {
+    currentMode = m;
+    document.querySelectorAll('.mode-btn').forEach(b => {
+      b.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-violet-600', 'text-white', 'shadow-lg', 'shadow-purple-900/40');
+      b.classList.add('text-zinc-400');
+    });
+    const active = document.querySelector(`.mode-btn[data-mode="${m}"]`);
+    if (active) {
+      active.classList.remove('text-zinc-400');
+      active.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-violet-600', 'text-white', 'shadow-lg', 'shadow-purple-900/40');
+    }
+  };
+
+  function createMessage(role) {
+    welcomeScreen.classList.add('hidden');
+    const wrap = document.createElement('div');
+    wrap.className = `w-full flex ${role === 'user' ? 'justify-end' : 'justify-start'} animate-in mb-8`;
+    const box = document.createElement('div');
+    box.className = `p-6 rounded-[2rem] text-[16px] leading-relaxed max-w-[95%] md:max-w-[80%] ${role === 'user' ? 'bg-purple-600 text-white rounded-tr-none' : 'glass text-zinc-100 rounded-tl-none'}`;
+    wrap.appendChild(box);
+    chatDisplay.appendChild(wrap);
+    return box;
+  }
+
+  async function handleSend() {
+    const prompt = userInput.value.trim();
+    if (!prompt && !attachedFile) return;
+
+    const userBox = createMessage('user');
+    userBox.innerText = prompt;
+    chatData.push({ role: 'user', text: prompt });
+    userInput.value = "";
+    userInput.style.height = 'auto';
+
+    scrollToBottom();
+
+    const aiBox = createMessage('ai');
+    aiBox.innerHTML = `<div class="flex gap-1.5 py-3"><div class="typing-dot w-2 h-2 bg-purple-400 rounded-full"></div><div class="typing-dot w-2 h-2 bg-purple-400 rounded-full" style="animation-delay:0.2s"></div><div class="typing-dot w-2 h-2 bg-purple-400 rounded-full" style="animation-delay:0.4s"></div></div>`;
+    scrollToBottom();
+
+    try {
+      if (currentMode === 'text-gemini' || currentMode === 'pro') {
+        await handleTextGeneration(prompt, aiBox);
+      } else if (currentMode === 'image') {
+        await handleImageGeneration(prompt, aiBox);
+      }
+    } catch (err) {
+      aiBox.innerText = `Error: ${err.message}`;
+      console.error(err);
+    } finally {
+      attachedFile = "";
+      localStorage.setItem('farleek_v1', JSON.stringify(chatData));
+      scrollToBottom();
+    }
+  }
+
+  async function handleTextGeneration(prompt, aiBox) {
+    const isPro = currentMode === 'pro';
+    const modeText = isPro ? 'PRO CODE' : 'TEXT';
+    const fullPrompt = `${attachedFile ? "[File Context] " + attachedFile : ""} Mode: ${modeText}. Request: ${prompt}`;
+
+    let accumulated = "";
+    aiBox.innerHTML = "";
+
+    const stream = await geminiModel.generateContentStream(fullPrompt);
+    for await (const chunk of stream.stream) {
+      accumulated += chunk.text();
+      updateAiBox(aiBox, accumulated, isPro);
+    }
+
+    chatData.push({ role: 'ai', text: accumulated });
+    scrollToBottom();
+  }
+
+  async function handleImageGeneration(prompt, aiBox) {
+    const seed = Math.floor(Math.random() * 1000000);
+    const url = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&seed=${seed}&model=flux`;
+    
+    aiBox.innerHTML = `<img src="${url}" class="rounded-3xl w-full shadow-2xl border border-white/5" alt="Generated Image" onload="scrollToBottom()">`;
+    chatData.push({ role: 'ai', text: url, isImage: true });
+    scrollToBottom();
+  }
+
+  function updateAiBox(box, text, isPro) {
+    box.innerHTML = text
+      .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    if (isPro) {
+      const codeMatch = text.match(/```(?:html|javascript|css|)?\s*([\s\S]*?)\s*```/);
+      if (codeMatch && !box.querySelector('.run-preview-btn')) {
+        const btn = document.createElement('button');
+        btn.className = "run-preview-btn mt-6 w-full bg-white text-black font-black py-3 rounded-2xl text-xs tracking-widest uppercase hover:bg-purple-600 hover:text-white transition-all";
+        btn.textContent = "Run Preview";
+        btn.onclick = () => {
+          const iframe = document.createElement('iframe');
+          iframe.className = "w-full h-[500px] mt-6 rounded-2xl border border-zinc-700 bg-white";
+          iframe.srcdoc = codeMatch[1];
+          box.appendChild(iframe);
+          btn.remove();
+          scrollToBottom();
         };
+        box.appendChild(btn);
+      }
+    }
+    
+    scrollToBottom();
+  }
 
-        function setQuality(mode) {
-            imgQuality = mode === 'turbo' ? 512 : 1024;
-            document.getElementById('turbo-btn').classList.toggle('active', mode === 'turbo');
-            document.getElementById('ultra-btn').classList.toggle('active', mode === 'ultra');
-        }
+  // ── EVENT LISTENERS ───────────────────────────────────────────────────────
+  sendBtn.onclick = handleSend;
 
-        function showWelcome() {
-            const box = document.getElementById('chat-box');
-            box.innerHTML = `
-                <div id="welcome" class="h-full flex flex-col items-center justify-center text-center py-20 animate-slide-up">
-                    <div class="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-bolt-lightning text-4xl text-indigo-500"></i>
-                    </div>
-                    <h2 class="text-4xl font-bold mb-2">Safwat Ultra v2</h2>
-                    <p class="text-zinc-500 text-sm max-w-xs mx-auto">Created by Safwat Rakhwan</p>
-                </div>`;
-        }
+  userInput.onkeydown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
-        async function handleSend() {
-            const input = document.getElementById('user-input');
-            const prompt = input.value.trim();
-            const assistantName = document.getElementById('pro-selector').value;
-            if(!prompt) return;
+  fileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      attachedFile = ev.target.result;
+      alert("File attached: " + file.name);
+    };
+    reader.readAsText(file);
+  };
 
-            // Identity Guard
-            if(["who are you", "who made you", "developer"].some(q => prompt.toLowerCase().includes(q))) {
-                createBubble('user', prompt); showLoading();
-                setTimeout(() => {
-                    removeLoading();
-                    const reply = "I am Safwat Ultra v2 . I am created by Safwat rakhwan an 9 years boy";
-                    createBubble('ai', reply);
-                    chats[currentChatId].messages.push({ role: 'user', text: prompt }, { role: 'ai', text: reply });
-                    save();
-                }, 800);
-                input.value = ''; return;
-            }
+  document.getElementById('new-chat-btn').onclick = () => {
+    localStorage.removeItem('farleek_v1');
+    location.reload();
+  };
 
-            createBubble('user', prompt);
-            input.value = ''; showLoading();
+  document.getElementById('menu-toggle').onclick = () => {
+    document.querySelector('aside').classList.toggle('-translate-x-full');
+  };
 
-            if(assistantName === 'Visionary') {
-                // FALLBACK URL LOGIC: Added randomness and clean encoding
-                const timestamp = Date.now();
-                const imgUrl = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=${imgQuality}&height=${imgQuality}&seed=${timestamp}&model=flux&nologo=true`;
-                
-                // Pre-verify image
-                const img = new Image();
-                img.onload = () => handleImageResponse(imgUrl, prompt);
-                img.onerror = () => {
-                    removeLoading();
-                    createBubble('ai', "⚠️ Image Generation Failed. The AI server is too busy or the prompt was blocked. Try a different description.");
-                };
-                img.src = imgUrl;
-                return;
-            }
-
-            try {
-                let system = `You are ${assistantName}, part of Safwat Ultra v2. Created by Safwat Rakhwan. `;
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: system + prompt }] }] })
-                });
-                const data = await res.json();
-                const reply = data.candidates[0].content.parts[0].text;
-                removeLoading();
-                createBubble('ai', marked.parse(reply));
-                chats[currentChatId].messages.push({ role: 'user', text: prompt }, { role: 'ai', text: reply });
-                save();
-            } catch(e) { removeLoading(); createBubble('ai', "Neural link error."); }
-        }
-
-        function handleImageResponse(url, prompt) {
-            removeLoading();
-            const b = createBubble('ai', '');
-            b.innerHTML = `<div class="relative group inline-block animate-slide-up"><img src="${url}" class="rounded-2xl max-w-full shadow-2xl border border-white/10"><button onclick="downloadImg('${url}')" class="absolute top-4 right-4 bg-black/60 p-3 rounded-full text-white hover:bg-indigo-600 transition-all"><i class="fa-solid fa-download"></i></button></div>`;
-            chats[currentChatId].messages.push({ role: 'user', text: prompt }, { role: 'ai', text: `![image](${url})`, isImage: true, prompt: prompt });
-            save();
-        }
-
-        async function downloadImg(url) {
-            const a = document.createElement("a"); a.href = url; a.download = `Safwat_Art_${Date.now()}.png`; a.click();
-        }
-
-        function openGallery() {
-            const content = document.getElementById('gallery-content');
-            content.innerHTML = '';
-            Object.values(chats).forEach(chat => chat.messages.forEach(m => {
-                if(m.isImage) {
-                    const url = m.text.match(/\((.*?)\)/)[1];
-                    const item = document.createElement('div');
-                    item.className = 'gallery-item';
-                    item.innerHTML = `<img src="${url}" onclick="window.open('${url}', '_blank')">`;
-                    content.appendChild(item);
-                }
-            }));
-            toggleModal('gallery-modal');
-        }
-
-        function createBubble(role, text) {
-            const box = document.getElementById('chat-box'); if(document.getElementById('welcome')) document.getElementById('welcome').remove();
-            const div = document.createElement('div'); div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} w-full animate-slide-up`;
-            const inner = document.createElement('div'); inner.className = role === 'user' ? 'bg-indigo-600 text-white p-4 rounded-2xl max-w-[85%] text-sm' : 'prose prose-invert max-w-full w-full bg-zinc-900/50 p-5 rounded-2xl border border-white/5';
-            inner.innerHTML = text; div.appendChild(inner); box.appendChild(div); box.scrollTo({top: box.scrollHeight, behavior: 'smooth'});
-            return inner;
-        }
-
-        function deleteChat(id, e) { e.stopPropagation(); delete chats[id]; save(); if(currentChatId === id) createNewChat(); else renderSidebar(); }
-        function save() { localStorage.setItem('safwat_ultra_v3', JSON.stringify(chats)); }
-        function renderSidebar() {
-            const list = document.getElementById('history-list'); list.innerHTML = '';
-            Object.keys(chats).reverse().forEach(id => {
-                const container = document.createElement('div');
-                container.className = "chat-item-container flex items-center gap-1 group";
-                const btn = document.createElement('button');
-                btn.className = `flex-1 text-left p-3.5 rounded-2xl text-[11px] font-bold truncate ${id === currentChatId ? 'bg-indigo-600 text-white' : 'text-zinc-500 hover:bg-white/5'}`;
-                btn.innerText = chats[id].messages[0]?.text.substring(0, 25) || "New Discussion";
-                btn.onclick = () => loadChat(id);
-                const del = document.createElement('button');
-                del.className = "delete-btn p-3 text-zinc-600 hover:text-red-500";
-                del.innerHTML = '<i class="fa-solid fa-trash-can text-xs"></i>';
-                del.onclick = (e) => deleteChat(id, e);
-                container.appendChild(btn); container.appendChild(del); list.appendChild(container);
-            });
-        }
-        function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
-        function createNewChat() { currentChatId = 'c_' + Date.now(); chats[currentChatId] = { messages: [] }; showWelcome(); renderSidebar(); }
-        function loadChat(id) { currentChatId = id; document.getElementById('chat-box').innerHTML = ''; if(!chats[id].messages.length) showWelcome(); else chats[id].messages.forEach(m => { if(m.isImage) handleImageResponse(m.text.match(/\((.*?)\)/)[1], m.prompt); else createBubble(m.role, m.role === 'ai' ? marked.parse(m.text) : m.text); }); renderSidebar(); }
-        function showLoading() { const l = document.createElement('div'); l.id = 'loading'; l.className = "p-4 animate-pulse text-indigo-500 font-bold text-[10px]"; l.innerText = "SAFEWAT ULTRA IS CREATING..."; document.getElementById('chat-box').appendChild(l); }
-        function removeLoading() { document.getElementById('loading')?.remove(); }
-        function clearAllHistory() { chats = {}; save(); createNewChat(); toggleModal('settings-modal'); }
-    </script>
+</script>
 </body>
 </html>
